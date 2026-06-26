@@ -1,0 +1,201 @@
+<section class="lab" aria-label="Tweet ID Experiment Lab">
+
+  <!-- ── HEADER ──────────────────────────────────────────────────── -->
+  <header class="lab__header">
+    <div class="lab__badge">🧪 EXPERIMENT</div>
+    <h2 class="lab__title">Tweet ID &amp; Reply Intent Lab</h2>
+    <p class="lab__desc">
+      Investigates whether a frontend-only solution can fetch tweet metadata
+      and open a targeted reply composer using only the Tweet URL.
+    </p>
+  </header>
+
+  <!-- ── STEP 1: URL INPUT ────────────────────────────────────────── -->
+  <div class="lab__section">
+    <label class="lab__label" for="tweetUrlInput">
+      <span class="lab__step">01</span>
+      Paste a Tweet URL
+    </label>
+    <input
+      id="tweetUrlInput"
+      class="lab__input"
+      type="url"
+      placeholder="https://x.com/username/status/1938045678901234567"
+      [value]="exp.tweetUrl()"
+      (input)="onUrlInput($any($event.target).value)"
+      autocomplete="off"
+      spellcheck="false"
+      aria-describedby="urlHint"
+    />
+    <p class="lab__hint" id="urlHint">
+      Supports both x.com and twitter.com URLs
+    </p>
+
+    <!-- Extracted ID display -->
+    @if (exp.hasValidId()) {
+      <div class="id-badge" role="status" aria-live="polite">
+        <span class="id-badge__label">Extracted Tweet ID</span>
+        <code class="id-badge__value">{{ exp.tweetId() }}</code>
+        <span class="id-badge__check" aria-label="Valid">✅</span>
+      </div>
+    }
+    @if (exp.tweetUrl() && !exp.hasValidId()) {
+      <div class="id-badge id-badge--error" role="alert" aria-live="polite">
+        <span class="id-badge__label">❌ Could not extract a Tweet ID from this URL</span>
+      </div>
+    }
+  </div>
+
+  <!-- ── STEP 2: RUN EXPERIMENT ────────────────────────────────────── -->
+  <div class="lab__section">
+    <div class="lab__label">
+      <span class="lab__step">02</span>
+      Probe all known endpoints
+    </div>
+    <p class="lab__hint">
+      Probes the oEmbed API, X API v2, and the Intent URL in sequence.
+      Results appear below in real time.
+    </p>
+    <button
+      class="lab__run-btn"
+      type="button"
+      [disabled]="!exp.hasValidId() || exp.isProbing()"
+      (click)="runExperiment()"
+    >
+      @if (exp.isProbing()) {
+        <span class="lab__spinner" aria-hidden="true"></span>
+        Running probes…
+      } @else {
+        ▶ Run Experiment
+      }
+    </button>
+  </div>
+
+  <!-- ── RESULTS PANEL ─────────────────────────────────────────────── -->
+  @if (exp.probeResults().length > 0) {
+    <div class="lab__section">
+      <div class="lab__label">
+        <span class="lab__step">03</span>
+        Probe results
+      </div>
+
+      <div class="results" role="list">
+        @for (result of exp.probeResults(); track result.endpoint) {
+          <div
+            class="result-card"
+            [class.result-card--success]="result.status === 'success'"
+            [class.result-card--cors]="result.status === 'cors_blocked'"
+            [class.result-card--auth]="result.status === 'auth_required'"
+            [class.result-card--error]="result.status === 'error'"
+            role="listitem"
+          >
+            <div class="result-card__header">
+              <span class="result-card__icon" aria-hidden="true">{{ statusIcon(result) }}</span>
+              <span class="result-card__endpoint">{{ result.endpoint }}</span>
+              <span class="result-card__status-badge">{{ statusLabel(result) }}</span>
+            </div>
+            <p class="result-card__message">{{ result.message }}</p>
+
+            @if (result.status === 'cors_blocked') {
+              <div class="result-card__tip">
+                <strong>💡 Fix:</strong> Route this call through a backend proxy that adds
+                <code>Access-Control-Allow-Origin: *</code> to the response headers.
+              </div>
+            }
+            @if (result.status === 'auth_required') {
+              <div class="result-card__tip">
+                <strong>💡 Fix:</strong> Call this endpoint from your backend using
+                a Bearer Token stored in an environment variable. Never embed tokens
+                in client-side code.
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ── STEP 3: MANUAL REPLY INTENT ──────────────────────────────── -->
+  @if (exp.hasValidId()) {
+    <div class="lab__section">
+      <div class="lab__label">
+        <span class="lab__step">04</span>
+        Open a targeted reply composer
+      </div>
+      <p class="lab__hint">
+        Uses <code>in_reply_to={{ exp.tweetId() }}</code> — X shows the original tweet above the composer.
+      </p>
+
+      <div class="intent-row">
+        <input
+          class="lab__input intent-row__input"
+          type="text"
+          placeholder="Write your reply text… (optional)"
+          [value]="manualReplyText()"
+          (input)="manualReplyText.set($any($event.target).value)"
+          maxlength="280"
+          aria-label="Reply text for intent URL"
+        />
+        <button
+          class="intent-row__btn"
+          type="button"
+          [disabled]="!exp.hasValidId()"
+          (click)="openManualReply()"
+        >
+          <!-- X logo SVG -->
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.258 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+          Reply on X
+        </button>
+      </div>
+
+      <!-- Generated URL preview -->
+      <div class="url-preview" aria-label="Generated intent URL">
+        <span class="url-preview__label">Generated URL</span>
+        <code class="url-preview__url">{{ exp.buildReplyIntentUrl(exp.tweetId()!, manualReplyText()) }}</code>
+      </div>
+    </div>
+  }
+
+  <!-- ── CONSOLE LOG PANEL ──────────────────────────────────────────── -->
+  @if (exp.logs().length > 0) {
+    <div class="lab__section">
+      <div class="lab__label">
+        <span class="lab__step">📋</span>
+        Experiment log
+      </div>
+      <div class="console" role="log" aria-label="Experiment console output" aria-live="polite">
+        @for (line of exp.logs(); track $index) {
+          <div class="console__line" [class.console__line--section]="line.startsWith('─')">{{ line }}</div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ── FINDINGS SUMMARY ───────────────────────────────────────────── -->
+  <div class="lab__section findings">
+    <div class="lab__label">📋 Findings Summary</div>
+    <div class="findings__grid">
+      <div class="findings__card findings__card--fail">
+        <div class="findings__card-icon">❌</div>
+        <div class="findings__card-title">Metadata fetch (frontend-only)</div>
+        <div class="findings__card-body">
+          <strong>NOT POSSIBLE.</strong>
+          oEmbed is CORS-blocked in browsers. X API v2 requires a server-side Bearer Token.
+          Both need a backend proxy.
+        </div>
+      </div>
+      <div class="findings__card findings__card--pass">
+        <div class="findings__card-icon">✅</div>
+        <div class="findings__card-title">Targeted reply (frontend-only)</div>
+        <div class="findings__card-body">
+          <strong>POSSIBLE.</strong>
+          <code>in_reply_to=&lt;tweetId&gt;</code> in the Intent URL is respected by X.
+          The original tweet appears above the composer. No auth required on our side.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>

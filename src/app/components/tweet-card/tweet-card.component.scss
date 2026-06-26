@@ -1,0 +1,98 @@
+.tweet-card {
+  display: flex;
+  gap: 12px;
+  padding: 16px 16px 0;
+
+  &__avatar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+    padding-bottom: 12px;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+
+  &__display-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: #e7e9ea;
+    white-space: nowrap;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  &__username {
+    font-size: 15px;
+    color: #71767b;
+    white-space: nowrap;
+  }
+
+  &__separator {
+    color: #71767b;
+    font-size: 15px;
+  }
+
+  &__timestamp {
+    font-size: 15px;
+    color: #71767b;
+    white-space: nowrap;
+  }
+
+  &__text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #e7e9ea;
+    margin: 0;
+    word-break: break-word;
+    white-space: pre-wrap;
+  }
+}
+
+// Avatar circle
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &__initials {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+}
+
+// Vertical thread connector — the line between avatars in a thread
+.thread-line {
+  width: 2px;
+  flex: 1;
+  min-height: 24px;
+  background: #2f3336;
+  margin-top: 8px;
+  border-radius: 1px;
+}

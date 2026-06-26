@@ -1,0 +1,70 @@
+<section class="embed-lab">
+
+  <div class="embed-lab__hero">
+    <h2 class="embed-lab__title">What if we embed X inside the modal?</h2>
+    <p class="embed-lab__sub">Click below — the browser will try to load X inside an iframe.</p>
+
+    <div class="embed-lab__actions">
+      @if (!attempted()) {
+        <button class="embed-btn" type="button" (click)="attemptEmbed()">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.258 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+          Try embedding X
+        </button>
+      } @else {
+        <button class="reset-btn" type="button" (click)="reset()">↺ Reset</button>
+      }
+    </div>
+  </div>
+
+  @if (attempted()) {
+    <div class="iframe-wrapper">
+
+      <!-- iframe WITHOUT sandbox — so browser fires the real X-Frame-Options error -->
+      <iframe
+        #embedIframe
+        class="embed-iframe"
+        title="X embed attempt"
+      ></iframe>
+
+      <!-- Error overlay — always shown on top -->
+      <div class="error-overlay" role="alert">
+        <div class="error-overlay__top">
+          <span class="error-overlay__icon">🚫</span>
+          <span class="error-overlay__title">Blocked by X</span>
+        </div>
+
+        <div class="error-overlay__console">
+          <p class="console-label">Browser console error (also visible in DevTools):</p>
+
+          <div class="console-line">
+            <span class="tag tag--error">Error</span>
+            <span class="console-line__msg">
+              Refused to display
+              <code>https://twitter.com/intent/tweet</code>
+              in a frame because it set
+              <code>X-Frame-Options</code> to <code>deny</code>.
+            </span>
+          </div>
+
+          <div class="console-line">
+            <span class="tag tag--error">Error</span>
+            <span class="console-line__msg">
+              <code>Content-Security-Policy</code>:
+              <code>frame-ancestors 'none'</code>
+              — embedding blocked on all domains, no workaround possible.
+            </span>
+          </div>
+        </div>
+
+        <p class="error-overlay__note">
+          X deliberately sets these headers on every response.
+          The only supported path is <code>window.open()</code> — what the button above uses.
+        </p>
+      </div>
+
+    </div>
+  }
+
+</section>

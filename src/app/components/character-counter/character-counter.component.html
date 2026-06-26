@@ -1,0 +1,29 @@
+<div class="counter" [attr.aria-label]="remaining() + ' characters remaining'">
+  <!-- SVG ring mirrors the X compose window circular progress indicator -->
+  <svg class="ring" [class]="ringClass()" viewBox="0 0 40 40" aria-hidden="true">
+    <!-- Background track -->
+    <circle
+      class="ring__track"
+      cx="20" cy="20"
+      [attr.r]="radius"
+      fill="none"
+      stroke-width="3"
+    />
+    <!-- Progress arc -->
+    <circle
+      class="ring__progress"
+      cx="20" cy="20"
+      [attr.r]="radius"
+      fill="none"
+      stroke-width="3"
+      stroke-linecap="round"
+      [attr.stroke-dasharray]="circumference"
+      [attr.stroke-dashoffset]="dashOffset()"
+    />
+  </svg>
+
+  <!-- Numeric remaining label: only shown near/over limit -->
+  <span class="counter__label" [class]="labelClass()">
+    {{ remaining() < 0 ? remaining() : remaining() }}
+  </span>
+</div>

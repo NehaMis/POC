@@ -1,0 +1,40 @@
+/* ──────────────────────────────────────────────────────────
+   Global styles — Reply on X POC
+   Sets dark background, box-sizing, and type baseline.
+────────────────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: #000;
+  color: #e7e9ea;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Remove default button and input styling */
+button,
+input,
+textarea {
+  font-family: inherit;
+}
+
+/* Focus ring override for better dark-mode visibility */
+:focus-visible {
+  outline: 2px solid #1d9bf0;
+  outline-offset: 2px;
+}

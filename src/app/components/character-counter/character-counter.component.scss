@@ -1,0 +1,61 @@
+.counter {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg); // Start arc from top
+
+  &__track {
+    stroke: rgba(255, 255, 255, 0.12);
+  }
+
+  &__progress {
+    transition: stroke-dashoffset 0.15s ease, stroke 0.2s ease;
+  }
+
+  // Default state: X blue
+  &.ring--default &__progress {
+    stroke: #1d9bf0;
+  }
+
+  // Warning state (≤20 chars remaining): amber
+  &.ring--warning &__progress {
+    stroke: #ffd400;
+  }
+
+  // Danger state (over limit): X red
+  &.ring--danger &__progress {
+    stroke: #f4212e;
+  }
+}
+
+.counter__label {
+  position: absolute;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1;
+  transition: opacity 0.15s ease, color 0.2s ease;
+
+  &.label--hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &.label--warning {
+    opacity: 1;
+    color: #ffd400;
+  }
+
+  &.label--danger {
+    opacity: 1;
+    color: #f4212e;
+  }
+}

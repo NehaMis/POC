@@ -1,0 +1,132 @@
+<div
+  class="modal-overlay"
+  role="presentation"
+  (click)="onOverlayClick($event)"
+>
+  <div
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="'Reply to @' + tweet()?.username"
+  >
+    <!-- ── HEADER ──────────────────────────────────── -->
+    <header class="modal__header">
+      <button
+        class="modal__close"
+        type="button"
+        aria-label="Close compose dialog"
+        (click)="close()"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18.36 5.64a1 1 0 00-1.41 0L12 10.59 7.05 5.64a1 1 0 00-1.41 1.41L10.59 12l-4.95 4.95a1 1 0 001.41 1.41L12 13.41l4.95 4.95a1 1 0 001.41-1.41L13.41 12l4.95-4.95a1 1 0 000-1.41z"/>
+        </svg>
+      </button>
+
+      <div class="modal__header-text">
+        <span class="modal__title">Reply to &#64;{{ tweet()?.username }}</span>
+        <!-- View thread link — opens the exact thread on X by tweet ID -->
+        <a
+          class="modal__thread-link"
+          [href]="threadUrl()"
+          target="_blank"
+          rel="noopener noreferrer"
+          [attr.aria-label]="'View thread ' + tweet()?.id + ' on X'"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.258 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+          View thread
+        </a>
+      </div>
+    </header>
+
+    <div class="modal__divider" aria-hidden="true"></div>
+
+    <!-- ── BODY ──────────────────────────────────────── -->
+    <div class="modal__body">
+
+      <!-- Tweet ID badge — confirms which tweet is being replied to -->
+      <div class="tweet-id-bar">
+        <span class="tweet-id-bar__label">Tweet ID</span>
+        <code class="tweet-id-bar__value">{{ tweet()?.id }}</code>
+      </div>
+
+      <!-- Original tweet card -->
+      @if (tweet(); as t) {
+        <app-tweet-card [tweet]="t" />
+      }
+
+      <!-- Reply composer row -->
+      <div class="compose-row">
+        <div class="compose-row__avatar" aria-hidden="true">
+          <span>RS</span>
+        </div>
+
+        <div class="compose-row__input-col">
+          <p class="compose-row__replying-to">
+            Replying to
+            <a class="compose-row__mention">&#64;{{ tweet()?.username }}</a>
+          </p>
+
+          <textarea
+            #replyTextarea
+            class="compose-row__textarea"
+            [value]="replyText()"
+            [attr.maxlength]="MAX_CHARS"
+            placeholder="Write your reply…"
+            rows="4"
+            aria-label="Reply text"
+            aria-multiline="true"
+            (input)="onTextInput($event)"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal__divider" aria-hidden="true"></div>
+
+    <!-- ── FOOTER ──────────────────────────────────────── -->
+    <footer class="modal__footer">
+      <div class="toolbar" aria-label="Formatting options" role="toolbar">
+        <button class="toolbar__btn" type="button" aria-label="Add image" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 5.5C3 4.119 4.12 3 5.5 3h13C19.88 3 21 4.119 21 5.5v13c0 1.381-1.12 2.5-2.5 2.5h-13C4.12 21 3 19.881 3 18.5v-13zM5.5 5c-.276 0-.5.224-.5.5v9.086l3-3 3 3 5-6 3 3.5V5.5c0-.276-.224-.5-.5-.5h-13zM19 15.414l-3-3.5-5 6-3-3-3 3V18.5c0 .276.224.5.5.5h13c.276 0 .5-.224.5-.5v-3.086zM9.75 7C8.784 7 8 7.784 8 8.75s.784 1.75 1.75 1.75 1.75-.784 1.75-1.75S10.716 7 9.75 7z"/>
+          </svg>
+        </button>
+        <button class="toolbar__btn" type="button" aria-label="Add emoji" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm3.5-9c.828 0 1.5-.672 1.5-1.5S16.328 8 15.5 8 14 8.672 14 9.5s.672 1.5 1.5 1.5zm-7 0c.828 0 1.5-.672 1.5-1.5S9.328 8 8.5 8 7 8.672 7 9.5 7.672 11 8.5 11zm3.5 6.5c2.33 0 4.381-1.388 5.375-3.387l-1.875-.938C14.89 14.387 13.545 15.5 12 15.5s-2.89-1.113-3.5-2.325l-1.875.938C7.619 16.112 9.67 17.5 12 17.5z"/>
+          </svg>
+        </button>
+        <button class="toolbar__btn" type="button" aria-label="Add location" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal__actions">
+        <app-character-counter [charCount]="charCount()" [maxChars]="MAX_CHARS" />
+        <div class="modal__actions-sep" aria-hidden="true"></div>
+
+        <button class="btn btn--ghost" type="button" (click)="close()">
+          Cancel
+        </button>
+
+        <!-- Reply button — uses tweet.id via in_reply_to in the intent URL -->
+        <button
+          class="btn btn--reply"
+          type="button"
+          [disabled]="!canReply()"
+          [attr.aria-disabled]="!canReply()"
+          (click)="replyOnX()"
+        >
+          <svg class="btn__x-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.258 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+          Reply
+        </button>
+      </div>
+    </footer>
+  </div>
+</div>

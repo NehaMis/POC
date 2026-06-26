@@ -1,0 +1,46 @@
+.page {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 16px 48px;
+  background: #000;
+
+  &__hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+    max-width: 480px;
+  }
+
+  &__x-mark {
+    width: 44px;
+    height: 44px;
+    svg { width: 100%; height: 100%; fill: #e7e9ea; }
+  }
+
+  &__title {
+    font-size: clamp(26px, 5vw, 36px);
+    font-weight: 800;
+    color: #e7e9ea;
+    margin: 0;
+    letter-spacing: -0.5px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  &__subtitle {
+    font-size: 15px;
+    color: #71767b;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
+
+.page-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #30363d 20%, #30363d 80%, transparent);
+  margin: 0 auto;
+  max-width: 600px;
+}
