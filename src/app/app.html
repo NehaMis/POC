@@ -10,6 +10,15 @@
       </div>
       <h1 class="page__title">Reply on X</h1>
       <p class="page__subtitle">Click the button — X opens directly, threaded to the tweet.</p>
+      <button
+        class="x-reply-popup__btn"
+        type="button"
+        (click)="openPopup()"
+        [attr.aria-label]="'Reply to @' + mockTweet.username + ' in a popup window'"
+      >
+        Reply in popup
+      </button>
+
       <app-reply-button [tweet]="mockTweet" />
     </div>
   </section>

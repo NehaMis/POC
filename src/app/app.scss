@@ -38,6 +38,24 @@
   }
 }
 
+.x-reply-popup__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: #1d9bf0;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover { background: #1a8cd8; }
+  &:active { background: #1781c2; }
+}
+
 .page-divider {
   height: 1px;
   background: linear-gradient(to right, transparent, #30363d 20%, #30363d 80%, transparent);
